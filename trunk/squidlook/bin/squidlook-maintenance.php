@@ -1,18 +1,18 @@
 #!/usr/bin/php5
 <?php
 # Program: SquidLook
-# Copyright 2006, Trapanator <trap@trapanator.com>
+# Copyright 2007, Trapanator <trap@trapanator.com>
 # Derived from the work of:
-# Program: mysar, File: bin/mysar.php
+# Program: mysar, File: bin/mysar-maintenance.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
 #
-# This file is part of mysar.
+# This file is part of squidLook.
 #
-# mysar is free software; you can redistribute it and/or modify
+# squidLook is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as published by
 # the Free Software Foundation.
 #
-# mysar is distributed in the hope that it will be useful,
+# squidLook is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
