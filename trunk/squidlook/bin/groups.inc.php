@@ -1,35 +1,50 @@
 <?php
 
-# Organizzazione dei gruppi nei servizi
+# Searches group for a username
 
-$names = array('Cultura', 'Sistema informativo', 'Polizia Municipale', 'Direzione generale', 'Piani, programmi e statistica');
+# please configure your arrays
+$groups = Array('Group1', 'Group2', 'Group3');
+$users[0] = Array('manganelll','fioronig','vicentinim');
+$users[1] = Array('veronesm', 'avit', 'lorenzag');
+$users[2] = Array('zanollim');
 
-$mgroups = array(
-	'cultura' => 'Cultura',
-	'serviziosistemainformativo' => 'Sistema informativo',
-	'sistemainformativo' => 'Sistema informativo',
-        'sistemainfterr' => 'Sistema informativo',
-        'CED' => 'Sistema informativo',
-        'serviziopolizia' => 'Polizia Municipale',
-        'direzioneg' => 'Direzione generale',
-        'comunicazi' => 'Direzione generale',
-        'pianificazione-cdg' => 'Direzione generale',
-        'pianistatistica' => 'Piani, programmi e statistica'
-);
+function searchAD ($username) {
 
-# print array_search ('Sistema informativo', $names);
-
-function getGroupID ($username, $groups) {
-
-   foreach (array_keys ($groups) as $uff) {
-       $commandline = "echo \"$username $uff\" | /usr/sbin/wbinfo_group.pl";
-       $res = system ($commandline);
+   global $groups;
+   foreach ($groups as $group) {
+       $commandline = "echo \"$username $group\" | /usr/sbin/wbinfo_group.pl";
+       $res = exec ($commandline);
        if ($res == 'OK') {
            break;
        }
    }
-   return $uff;
+   if ($res != 'OK') {
+       return FALSE;
+   }
+
+   return array_search ($group, $groups);
 
 }
 
+function searchArray ($username) {
+
+   global $groups;
+   global $users;
+   foreach (array_keys($users) as $group_id) {
+      $res = array_search ($username, $users[$group_id]);
+      if ($res !== FALSE) {
+         return $group_id;
+      }
+   }
+   return FALSE;
+}
+
+function getGroupID ($username) {
+
+   # return searchAD ($username);  // Uncomment this if you are using Active Directory
+   # return searchLDAP ($username); // Uncomment this if you are using LDAP
+   # return 0; // Uncomment this if you want to disable group searching
+   return searchArray ($username); // Uncomment this if you are using Array lists
+
+}
 ?>

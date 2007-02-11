@@ -1,18 +1,18 @@
-#!/usr/bin/php
+#!/usr/bin/php5
 <?php
 # Program: SquidLook
 # Copyright 2007, Trapanator <trap@trapanator.com>
 # Derived from the work of:
-# Program: mysar, File: bin/mysar.php
+# Program: mysar, File: bin/mysar-importer.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
 #
-# This file is part of mysar.
+# This file is part of squidLook.
 #
-# mysar is free software; you can redistribute it and/or modify
+# squidLook is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as published by
 # the Free Software Foundation.
 #
-# mysar is distributed in the hope that it will be useful,
+# squidLook is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -38,18 +38,20 @@ require($basePath.'/inc/common.inc.php');
 // Group manangement
 require('groups.inc.php');
 
-error_reporting(E_ALL);
-debug('Start timestamp is '.$startTime,40,__FILE__,__LINE__);
+#error_reporting(E_ALL);
+print "\n";
+debug($argv[0].' started.',30,__FILE__,__LINE__);
+debug('Start timestamp is '.$startTime,30,__FILE__,__LINE__);
 debug('Configuration:'.print_r($iniConfig,TRUE),40,__FILE__,__LINE__);
-
-$mysarImporter=getConfigValue('mysarImporter');
-if($mysarImporter!='enabled') {
+ 
+$squidLookImporter=getConfigValue('squidlookImporter');
+if($squidLookImporter!='enabled') {
 	debug('Importer is disabled. Exiting...',30,__FILE__,__LINE__);
 	debug('',30,__FILE__,__LINE__);
 	exit(0);
 }
 
-$maxRunTime=55;
+$maxRunTime=55; // Max run time is 55 seconds
 
 // http://www.squid-cache.org/Doc/FAQ/FAQ.html#toc6.7
 $inCacheCodes[]='TCP_HIT';
@@ -107,12 +109,24 @@ debug(print_r($record,TRUE),40,__FILE__,__LINE__);
 
 #sleep (10);
 
+# IP caching
+$cache_ip = array();
 # Users caching
 $cache_users = array();
+# Group caching
+$cache_group = array();
+# URL domain caching
+$cache_url = array();
 
 $lastImportedRecordsNumber=0;
 
+$toInsert = 0;
+$InsQuery='INSERT INTO traffic(date,time,elapsedTime,ip,resultCode,bytes,url,authuser,sitesID,usersID) VALUES ';
+
 while (!feof($handle)) {
+	global $toInsert;
+	global $InsQuery;
+
 	debug('Current file offset: '.ftell($handle),40,__FILE__,__LINE__);
 	
 	$timestampNow=mktime();
@@ -155,8 +169,7 @@ while (!feof($handle)) {
 		continue;
 	}
 	// print a _ for every good record
-	debug('NO',40);
-	//debug('_',30);
+	debug('_',40);
 	$lastImportedRecordsNumber++;
 	
 	debug('Parsing record...',40,__FILE__,__LINE__);
@@ -170,43 +183,22 @@ while (!feof($handle)) {
 	$dbRecord['bytes']=$record[4];
 
 	$u = addslashes($record[6]);
-	
 	$dbRecord['url']= (substr ($u, -1) != '?') ? $u : substr ($u, 0, -1) ;
 
 	$dbRecord['authuser']=mysql_real_escape_string(substr($record[7],0,50));
 
-	// #### FILTRO - ELIMINAZIONE UTENTE '-'
-
-	if ($dbRecord['authuser'] == '-') {
-		continue;
-	}
-
-	// #### FILTRO - ESTENSIONI IGNORATE: CSS, JS
-
-	$ext = array (".css", ".js", ".jpg", ".jpeg", ".png", ".gif", ".swf", ".ico", ".rss", ".xml", ".cgi", ".do", ".flv", ".rdf");
-
-	foreach ($ext as $item) {
-        	if (preg_match("/\\".$item.'$/i', $dbRecord['url'])) {
-			continue 2;
-		}
-	}
-					
 	$resultCodeArray=explode('/',$dbRecord['resultCode']);
 	
-	// #### FILTRO - ELIMINAZIONE STATO TCP/DENIED 407
-	
+	// Ignore all '407 access forbidden' errors
 	if ($resultCodeArray[0] == 'TCP_DENIED') {
 		continue;
 	}
-	
+
 	if(in_array($resultCodeArray[0],$inCacheCodes)) {
 		$dbRecord['field']='inCache';
 	} else {
 		$dbRecord['field']='outCache';
 	}
-
-
-
 
 	debug(print_r($dbRecord,TRUE),40,__FILE__,__LINE__);
 	
@@ -246,46 +238,30 @@ while (!feof($handle)) {
 		continue;
 	}
 	
-	debug('Inserting raw record into the database...',40,__FILE__,__LINE__);
-	$query='INSERT INTO traffic(date,time,elapsedTime,ip,resultCode,bytes,url,authuser) VALUES (';
-		$query.="'".$dbRecord['date']."'";
-		$query.=',';
-		$query.="'".$dbRecord['time']."'";
-		$query.=',';
-		$query.="'".$dbRecord['elapsedTime']."'";
-		$query.=',';
-		$query.="INET_ATON('".$dbRecord['ip']."')";
-		$query.=',';
-		$query.="'".$dbRecord['resultCode']."'";
-		$query.=',';
-		$query.="'".$dbRecord['bytes']."'";
-		$query.=',';
-		$query.="'".$dbRecord['url']."'";
-		$query.=',';
-		$query.="'".$dbRecord['authuser']."'";
-		$query.=')';
-	$dbRecord['id']=db_insert($query);
-
 	debug('Searching ip '.$dbRecord['ip'].'...',40,__FILE__,__LINE__);
-	$query="SELECT id FROM hostnames WHERE ip=INET_ATON('".$dbRecord['ip']."')";
-	$recordSet=db_select_one_row($query);
-	if($recordSet['id']=='') {
-		debug('Not found. Inserting to database...',40,__FILE__,__LINE__);
-		$query='INSERT INTO ';
-		$query.='hostnames';
-		$query.='(';
-		$query.='ip';
-		$query.=',';
-		$query.='hostname';
-		$query.=') VALUES (';
-		$query.="INET_ATON('".$dbRecord['ip']."')";
-		$query.=',';
-		$query.="'".$dbRecord['ip']."'";
-		$query.=')';
-		$hostnamesID=db_insert($query);
-	} else {
-		debug('Found.',40,__FILE__,__LINE__);
-		$hostnamesID=$recordSet['id'];
+	$hostnamesID = $cache_ip [$dbRecord['ip']];
+	if (!$hostnamesID) {
+		$query="SELECT id FROM hostnames WHERE ip=INET_ATON('".$dbRecord['ip']."')";
+		$recordSet=db_select_one_row($query);
+		if($recordSet['id']=='') {
+			debug('Not found. Inserting to database...',40,__FILE__,__LINE__);
+			$query='INSERT INTO ';
+			$query.='hostnames';
+			$query.='(';
+			$query.='ip';
+			$query.=',';
+			$query.='hostname';
+			$query.=') VALUES (';
+			$query.="INET_ATON('".$dbRecord['ip']."')";
+			$query.=',';
+			$query.="'".$dbRecord['ip']."'";
+			$query.=')';
+			$hostnamesID=db_insert($query);
+		} else {
+			debug('Found.',40,__FILE__,__LINE__);
+			$hostnamesID=$recordSet['id'];
+		}
+		$cache_ip [$dbRecord['ip']] = $hostnamesID;
 	}
 	debug('Hostname ID is: '.$hostnamesID,40,__FILE__,__LINE__);
 
@@ -303,15 +279,19 @@ while (!feof($handle)) {
 	debug('Full host url is '.$dbUrl,40,__FILE__,__LINE__);
 	
 	debug('Searching id of host '.$dbUrl.'...',40,__FILE__,__LINE__);
-	$query="SELECT id FROM sites WHERE site='".$dbUrl."'";
-	$recordSet=db_select_one_row($query);
-	if($recordSet['id']=='') {
-		debug('Not found. Inserting to database...',40,__FILE__,__LINE__);
-		$query="INSERT INTO sites(site) VALUES ('$dbUrl')";
-		$sitesID=db_insert($query);
-	} else {
-		debug('Found.',40,__FILE__,__LINE__);
-		$sitesID=$recordSet['id'];
+	$sitesID = $cache_url [$dbUrl];
+	if (empty ($sitesID)) {
+		$query="SELECT id FROM sites WHERE site='".$dbUrl."'";
+		$recordSet=db_select_one_row($query);
+		if($recordSet['id']=='') {
+			debug('Not found. Inserting to database...',40,__FILE__,__LINE__);
+			$query="INSERT INTO sites(site) VALUES ('$dbUrl')";
+			$sitesID=db_insert($query);
+		} else {
+			debug('Found.',40,__FILE__,__LINE__);
+			$sitesID=$recordSet['id'];
+		}
+		$cache_url [$dbUrl] = $sitesID;
 	}
 	debug('Site ID is: '.$sitesID,40,__FILE__,__LINE__);
 
@@ -319,33 +299,54 @@ while (!feof($handle)) {
 	db_insert_noexit($query);
 
         $user = $dbRecord['authuser']; 
+	$group = '';
 	debug('Searching id of user '.$user.'...',40,__FILE__,__LINE__);
-        if (array_key_exists($user, $cache_users)) { 
-                $usersID = $cache_users[$user];
-		debug('User $user cached. The ID is '.$usersID);
+	$usersID = $cache_users[$user];
+        if (!empty($usersID)) { 
+		$group = $cache_group[$user];
+		debug('User $user cached. The ID is '.$usersID.' and Group is '.$group,40,__FILE__,__LINE__);
 	} else {
-		$query="SELECT id FROM users WHERE authuser='".$user."'";
+		$query="SELECT id, groupID FROM users WHERE authuser='".$user."'";
 		$recordSet=db_select_one_row($query);
 		if($recordSet['id']=='') {
 			debug('Not found. Inserting to database...',40,__FILE__,__LINE__);
-        	        $group = $mgroups [getGroupID ($user, $mgroups)]; 
-	                debug('Found group "'. $group .'" for user '. $user,40,__FILE__,__LINE__);
-			$query="INSERT INTO users(authuser,servizio) VALUES ('".$user."','".$group."')";
-			$usersID=db_insert($query);
+			$gid = getGroupID ($user); 
+			if ($gid === FALSE) {
+				debug ('Group for user $user not found. Defaulting to "UNKNOWN"', 40,__FILE__,__LINE__);
+				$group = "UNKNOWN";
+			} else {
+				$group = $groups[$gid];
+	                	debug('Found group "'. $group .'" for user '. $user,40,__FILE__,__LINE__);
+			}
 
-			$query="INSERT INTO groups(username,servizio) VALUES ('".$user."','".$group."')";
-			db_insert($query);
+			// Checking group in groups...
+			$query="SELECT ID FROM groups WHERE NAME='".$group."'";
+			$resultSet=db_select_one_row($query);
+			if ($resultSet['ID']=='') {
+				$query="INSERT INTO groups(NAME) VALUES ('".$group."')";
+				$group = db_insert($query);
+			} else {
+				$group = $resultSet['ID'];
+			}
+			$cache_group[$user] = $group;
+
+			$query="INSERT INTO users(authuser,groupID) VALUES ('".$user."','".$group."')";
+			$usersID=db_insert($query);
+			$cache_users[$user] = $usersID;
 		} else {
 			debug('Found.',40,__FILE__,__LINE__);
 			$usersID=$recordSet['id'];
+			$group=$recordSet['groupID'];
 		}
 	}
-	debug('User ID is: '.$usersID,40,__FILE__,__LINE__);
+	debug('User ID is: '.$usersID.' Group is: '.$group,40,__FILE__,__LINE__);
 	
 	debug('Updating trafficSummaries...',40,__FILE__,__LINE__);
 	$query='UPDATE ';
 	$query.='trafficSummaries SET ';
 	$query.=$dbRecord['field'].'='.$dbRecord['field'].'+'.$dbRecord['bytes'];
+        $query.=' , elapsedTime=elapsedTime+'.$dbRecord['elapsedTime'];
+        $query.=' , count=count+1';
 	$query.=' WHERE ';
 	$query.="date='".$dbRecord['date']."'";
 	$query.=" AND ";
@@ -361,7 +362,7 @@ while (!feof($handle)) {
 	$affectedRows=db_update($query);
 	if($affectedRows==0) {
 		debug('Did not update. Trying insert...',40,__FILE__,__LINE__);
-		$query='INSERT INTO trafficSummaries(date,ip,'.$dbRecord['field'].',sitesID,usersID,summaryTime) VALUES (';
+		$query='INSERT INTO trafficSummaries(date,ip,'.$dbRecord['field'].',sitesID,usersID,groupID,summaryTime,elapsedTime,count) VALUES (';
 			$query.="'".$dbRecord['date']."'";
 			$query.=',';
 			$query.="INET_ATON('".$dbRecord['ip']."')";
@@ -372,54 +373,47 @@ while (!feof($handle)) {
 			$query.=',';
 			$query.="'$usersID'";
 			$query.=',';
+                        $query.="'$group'";
+			$query.=',';
 			$query.="'".$dbRecord['summaryTime']."'";
+			$query.=',';
+			$query.=$dbRecord['elapsedTime'];
+			$query.=',';
+			$query.='1';
 			$query.=')';
 		$insertID=db_insert($query);
 		debug('Insert ID is '.$insertID,40,__FILE__,__LINE__);
 	}
 
-        debug('Updating trafficSummaries...',40,__FILE__,__LINE__);
-        $query='UPDATE ';
-        $query.='trafficSummaries SET ';
-        $query.='elapsedTime=elapsedTime+'.$dbRecord['elapsedTime'];
-        $query.=' WHERE ';
-        $query.="date='".$dbRecord['date']."'";
-        $query.=" AND ";
-        $query.="ip=INET_ATON('".$dbRecord['ip']."')";
-        $query.=" AND ";
-        $query.="sitesID='$sitesID'";
-        $query.=" AND ";
-        $query.="usersID='$usersID'";
-        $query.=" AND ";
-        $query.="summaryTime='".$dbRecord['summaryTime']."'";
-        $affectedRows=db_update($query);
-
-
-	$query='UPDATE ';
-        $query.='trafficSummaries SET ';
-        $query.='count=count+1';
-        $query.=' WHERE ';
-        $query.="date='".$dbRecord['date']."'";
-        $query.=" AND ";
-        $query.="ip=INET_ATON('".$dbRecord['ip']."')";
-        $query.=" AND ";
-        $query.="sitesID='$sitesID'";
-        $query.=" AND ";
-        $query.="usersID='$usersID'";
-        $query.=" AND ";
-        $query.="summaryTime='".$dbRecord['summaryTime']."'";
-        $affectedRows=db_update($query);
-							
-	debug('Updating original record id '.$dbRecord['id'].' to contain sitesID and usersID...',40,__FILE__,__LINE__);
-	$query='UPDATE ';
-	$query.='traffic ';
-	$query.='SET ';
-	$query.="sitesID='".$sitesID."'";
-	$query.=',';
-	$query.="usersID='".$usersID."'";
-	$query.=' WHERE ';
-	$query.="id='".$dbRecord['id']."'";
-	db_update($query,1);
+	debug('Inserting raw record into the database...',40,__FILE__,__LINE__);
+	$InsQuery.="('".$dbRecord['date']."'";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['time']."'";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['elapsedTime']."'";
+		$InsQuery.=',';
+		$InsQuery.="INET_ATON('".$dbRecord['ip']."')";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['resultCode']."'";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['bytes']."'";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['url']."'";
+		$InsQuery.=',';
+		$InsQuery.="'".$dbRecord['authuser']."'";
+		$InsQuery.=',';
+		$InsQuery.=$sitesID;
+		$InsQuery.=',';
+		$InsQuery.=$usersID;
+		$InsQuery.=') ';
+	if ($toInsert == 100) {
+		$dbRecord['id']=db_insert($InsQuery);
+		$toInsert = 0;
+		$InsQuery='INSERT INTO traffic(date,time,elapsedTime,ip,resultCode,bytes,url,authuser,sitesID,usersID) VALUES ';
+	} else {
+		$InsQuery.=', ';
+		$toInsert ++;
+	}
 
 	debug('Updating last processed record to '.$record[0].'... ',40,__FILE__,__LINE__);
 	updateConfig('lastTimeStamp',$record[0]);
@@ -429,5 +423,8 @@ while (!feof($handle)) {
 	updateConfig('lastLogOffset',ftell($handle));
 	debug('Done.',40);
 }
+debug('End timestamp is '.mktime(),30,__FILE__,__LINE__);
+debug($argv[0].' stopped.',30,__FILE__,__LINE__);
+print "\n";
 my_exit(0);
 ?>

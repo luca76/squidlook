@@ -1,16 +1,14 @@
-#!/usr/bin/php
+#!/usr/bin/php5
 <?php
-# Program: SquidLook
-# Copyright 2006, Trapanator <trap@trapanator.com>
-# Derived from the work of:
-# Program: mysar, File: bin/mysar.php
-# Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
+# Program: mysar, File: bin/mysar-maintenance.php
+# Copyright 2004-2005, Stoilis Giannis <giannis@stoilis.gr>
 #
 # This file is part of mysar.
 #
 # mysar is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as published by
-# the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
 # mysar is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,7 +33,13 @@ $DEBUG_LEVEL='30';
 // Common tasks for both web and cmd
 require($basePath.'/inc/common.inc.php');
 
-$tmpPath=getConfigValue('tmpPath');
+debug('Checking whether resolving is enabled...',40,__FILE__,__LINE__);
+$resolveClients=getConfigValue('resolveClients');
+if($resolveClients!='enabled') {
+	debug('Resolving is NOT enabled. Exiting...',30,__FILE__,__LINE__);
+	exit(0);
+}
+debug('Resolving is enabled.',40,__FILE__,__LINE__);
 
 error_reporting(E_ALL);
 
@@ -44,23 +48,18 @@ debug('Configuration:'.print_r($iniConfig,TRUE),40,__FILE__,__LINE__);
 
 $maxRunTime=55;
 
-$cleanUntil=date('Y-m-d',mktime(0,0,0,substr($today,5,2),substr($today,8,2)-getConfigValue('keepHistoryDays'),substr($today,0,4)));
-debug('Cleaning up until '.$cleanUntil,40,__FILE__,__LINE__);
-	
-// array containing tables to be cleaned
-$cleanTable=array('sites','traffic','trafficSummaries','users');
-reset($cleanTable);
+$query='SELECT ';
+$query.='id';
+$query.=',';
+$query.='INET_NTOA(ip) AS ip';
+$query.=' FROM ';
+$query.=' hostnames ';
+$query.=' WHERE ';
+$query.="isResolved='0'";
+$query.=' ORDER BY id ASC';
 
-while(list($key,$tableName)=each($cleanTable)) {
-	debug('Cleaning-up '.$tableName.'...',40,__FILE__,__LINE__);
-	$query='DELETE FROM '.$tableName." WHERE date<'".$cleanUntil."'";
-	db_delete($query);
-}
-
-$query='SHOW TABLES';
-$tables=db_select_all($query);
-reset($tables);
-while(list($key,$tableName)=each($tables)) {
+$result=db_select($query);
+while($row=db_fetch_array($result)) {
 	$timestampNow=mktime();
 	debug('Now timestamp is: '.$timestampNow.'. Script start was at: '.$startTime,40,__FILE__,__LINE__);
 	debug('Checking if run time exceeded '.$maxRunTime.' seconds...',40,__FILE__,__LINE__);
@@ -71,15 +70,21 @@ while(list($key,$tableName)=each($tables)) {
 	}
 	debug('NO',40);
 
-	$query="OPTIMIZE TABLE $tableName[0]";
-	debug('Optimizing '.$tableName[0].'...',30,__FILE__,__LINE__);
-	db_query($query);
-	debug('Optimization finished.',30,__FILE__,__LINE__);
+	$hostname=gethostbyaddr($row['ip']);
+	$query='UPDATE ';
+	$query.='hostnames';
+	$query.=' SET ';
+	$query.="hostname='".$hostname."'";
+	$query.=',';
+	$query.="isResolved='1'";
+	$query.=' WHERE ';
+	$query.="id='".$row['id']."'";
+	db_update($query,1);
+	debug('.',30);
 }
-
 	
-debug('Updating last clean-up date to today date...',40,__FILE__,__LINE__);
-$query="UPDATE config SET value='".date('Y-m-d')."' WHERE name='lastCleanUp'";
+debug('Updating last resolver timestamp...',40,__FILE__,__LINE__);
+$query="UPDATE config SET value='".mktime()."' WHERE name='lastResolve'";
 db_update($query);
 echo "\n";
 ?>
