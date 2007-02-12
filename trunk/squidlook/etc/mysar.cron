@@ -1,3 +1,0 @@
-* * * * *	root	/usr/local/mysar/bin/mysar-importer.php > /usr/local/mysar/log/mysar-importer.log 2>&1
-* * * * *	root	/usr/local/mysar/bin/mysar-resolver.php > /usr/local/mysar/log/mysar-resolver.log 2>&1
-0 0 * * *	root	/usr/local/mysar/bin/mysar-maintenance.php /usr/local/mysar/log/mysar-maintenance.log 2>&1
