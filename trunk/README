@@ -1,0 +1,16 @@
+SquidLook README
+================
+
+Why a new fork of mysar?
+------------------------
+
+Mysar is a good work, but I decided to take the sources of Mysar 2.0.12
+and to extend it.
+SquidLook supports these features missing in Mysar:
+
+  - Period time support in all pages, not only in the main page (monthly view, for example)
+  - Groups of users support (for now via Active Directory or file)
+  - Whitelisting allows to not include certain sites in the statistics
+  - Optimized some SQL queries
+  - Privacy support 
+  - MySql 5.0 support
