@@ -1,0 +1,21 @@
+MySQL Squid Access Report
+http://giannis.stoilis/software/mysar/
+
+MySQL Squid Access Report, mysar for short, is a reporting system for user web traffic activity, as logged from a squid proxy.
+
+mysar consists of two parts:
+- Command line utilities which import a squid log file in a MySQL database and maintain the databas.
+- A web interface for accessing the reports.
+
+Its key features are:
+- Free. Licenced under the GPL, mysar is free for everyone to use.
+- Dynamic. Forget about static reports that take ages to generate, hogging the system's CPU. Mysar is is the only squid reporting system with a database as its backend.
+- Almost realtime. No longer do you have to wait for the next hour or day for the reports to be generated. All of the user activity is available to you when you want it. NOW.
+- Portable. Written in pure PHP, mysar is available to any unix-based OS platform PHP supports, without any modification.
+- Flexible. Since the code is open-source, you can customize it to your needs. Create you own reports as you see fit.
+- Supported. Mysar project has a mailing-list, forum and an active maintainer.
+- Stable. Utilizing mature and stable software like Smarty, MySQL and PHP, mysar is standing on the shoulders of giants.
+- Easy. With a foolproof installation and a user-friendly web interface, mysar makes web traffic reporting easier than ever.
+- Customisable. Mysar needn't be on the same server as squid or MySQL. If your load is too high, just load-balance your processes as you see fit.
+
+For more information, documentation, support instructions etc, please visit http://giannis.stoilis.gr/software/mysar/

@@ -1,0 +1,37 @@
+squidLook 1.X INSTALLATION GUIDE
+--------------------------------
+
+This guide is based on Mysar.
+
+You should already have:
+- A working MySQL server (4.1 or higher).
+- A working Apache web server with PHP4 (or PHP5) installed
+- A working squid proxy server.
+
+SquidLook has a web-based installation wizard, so all you have to do at first is setup the web-based functionality of the program first and the wizard will guide you for the rest.
+
+- Become root. For example:
+	su -
+  If your system is Ubuntu Linux, run the following instead:
+  	sudo bash
+
+- Download the latest version of MySAR. Instructions can be found at http://giannis.stoilis.gr/software/mysar/.
+  
+- Extract this file to /usr/local/. For example:
+  	tar zxvf squidLook-*.tar.gz -C /usr/local
+  	
+- Configure your Apache Web Server to point the /mysar/ directory to the local directory /usr/local/mysar/www/.
+  For Debian-based systems and Apache2:
+	ln -s /usr/local/mysar/etc/mysar.apache /etc/apache2/conf.d/mysar
+	/etc/init.d/apache2 restart
+  All others should act accordingly, or put the contents of etc/mysar.apache file somewhere in the Apache configuration.
+	
+- Point your browser to the /mysar/ directory of your server and follow the instructions, for example:
+	http://localhost/mysar/
+
+- AFTER finishing the above procedure, you need to add the appropriate entries in etc/mysar.cron in your cron file. For systems having an /etc/cron.d directory, this can by as simple as running the following command:
+	ln -s /usr/local/mysar/etc/mysar.cron /etc/cron.d/mysar
+
+If you have any problems during(or after...) the installation, be sure to check the website for updates, frequently asked questions or support information. MySAR project now has a forum and a mailing list, try asking your questions there before contacting me directly.
+
+http://www.trapanator.com/blog/archives/category/squidlook/
