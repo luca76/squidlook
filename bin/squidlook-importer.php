@@ -41,7 +41,7 @@ require('groups.inc.php');
 #error_reporting(E_ALL);
 print "\n";
 debug($argv[0].' started.',30,__FILE__,__LINE__);
-debug('Start timestamp is '.$startTime,30,__FILE__,__LINE__);
+debug('Start timestamp is '.strftime ('%c',$startTime),30,__FILE__,__LINE__);
 debug('Configuration:'.print_r($iniConfig,TRUE),40,__FILE__,__LINE__);
  
 $squidLookImporter=getConfigValue('squidlookImporter');
@@ -131,11 +131,12 @@ while (!feof($handle)) {
 	
 	$timestampNow=mktime();
 	debug('Now timestamp is: '.$timestampNow.'. Script start was at: '.$startTime,40,__FILE__,__LINE__);
+
 	debug('Checking if run time exceeded '.$maxRunTime.' seconds...',40,__FILE__,__LINE__);
 	if(($timestampNow-$startTime ) > $maxRunTime) {
 		debug('YES',40);
 		debug('Exceeded run time',30,__FILE__,__LINE__);
-		my_exit(0);
+		break;
 	}
 	debug('NO',40);
 
@@ -423,7 +424,16 @@ while (!feof($handle)) {
 	updateConfig('lastLogOffset',ftell($handle));
 	debug('Done.',40);
 }
-debug('End timestamp is '.mktime(),30,__FILE__,__LINE__);
+
+# Flush the buffered insert (removing the ", " at end)
+if ($toInsert > 0) {
+	db_insert(substr ( $InsQuery, 0, -2) );
+}
+
+# close the connection
+mysql_close ($link);
+
+debug('End timestamp is '.strftime ('%c',mktime()),30,__FILE__,__LINE__);
 debug($argv[0].' stopped.',30,__FILE__,__LINE__);
 print "\n";
 my_exit(0);
