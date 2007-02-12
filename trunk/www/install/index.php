@@ -1,14 +1,17 @@
 <?php
-# Program: mysar, File: www/index.php
+# Program: SquidLook
+# Copyright 2007, Trapanator <trap@trapanator.com>
+# Derived from the work of:
+# Program: mysar, File: www/install/index.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
 #
-# This file is part of mysar.
+# This file is part of squidLook.
 #
-# mysar is free software; you can redistribute it and/or modify
+# squidLook is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as published by
 # the Free Software Foundation.
 #
-# mysar is distributed in the hope that it will be useful,
+# squidLook is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -17,8 +20,25 @@
 # along with Foobar; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
 // This is needed later on...
 set_time_limit(0);
+$basePath=realpath(dirname(__FILE__));
+
+function generate_db() {
+
+	global $basePath;
+
+	$lines = file($basePath.'/squidlook.sql');
+
+	foreach ($lines as $linenum => $line) {
+		if (substr ($line, 0, 2) == '--') {
+			continue;
+		}
+		mysql_query ($line) || die "Mysql error at line $linenum, file $basePath/squidlook.sql";
+	}
+	return 0;
+}
 
 function db_check($result,$step=1) {
 
@@ -51,107 +71,6 @@ function db_check($result,$step=1) {
 		}//switch($step) {
 	}//if($result==FALSE) {
 }
-
-$queries1[]='DROP DATABASE IF EXISTS '.$_REQUEST['dbname'].';';
-$queries1[]='CREATE DATABASE '.$_REQUEST['dbname'].';';
-$queries2[]="
-CREATE TABLE IF NOT EXISTS config (
-  name varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  UNIQUE KEY name (name)
-);
-";
-$queries2[]="
-CREATE TABLE IF NOT EXISTS hostnames (
-  id bigint(20) unsigned NOT NULL auto_increment,
-  ip int(10) unsigned NOT NULL default '0',
-  description varchar(50) NOT NULL default '',
-  isResolved tinyint(3) unsigned NOT NULL default '0',
-  hostname varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  KEY isResolved (isResolved),
-  KEY ip (ip)
-);
-";
-$queries2[]="
-CREATE TABLE IF NOT EXISTS trafficSummaries (
-  id bigint(20) unsigned NOT NULL auto_increment,
-  `date` date NOT NULL default '0000-00-00',
-  ip int(10) unsigned NOT NULL default '0',
-  usersID bigint(20) unsigned NOT NULL default '0',
-  inCache bigint(20) unsigned NOT NULL default '0',
-  outCache bigint(20) unsigned NOT NULL default '0',
-  sitesID bigint(20) unsigned NOT NULL default '0',
-  summaryTime tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY date_ip_usersID_sitesID_summaryTime (`date`,ip,usersID,sitesID,summaryTime)
-);
-";
-$queries2[]="
-CREATE TABLE IF NOT EXISTS traffic (
-  id bigint(20) unsigned NOT NULL auto_increment,
-  `date` date NOT NULL default '0000-00-00',
-  `time` time NOT NULL default '00:00:00',
-  ip int(10) unsigned NOT NULL default '0',
-  resultCode varchar(50) NOT NULL default '',
-  bytes bigint(20) unsigned NOT NULL default '0',
-  url varchar(255) NOT NULL default '',
-  authuser varchar(30) NOT NULL default '',
-  sitesID bigint(20) unsigned NOT NULL default '0',
-  usersID bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
-  KEY date_ip_sitesID_usersID (`date`,ip,sitesID,usersID)
-);
-";
-$queries2[]="
-CREATE TABLE IF NOT EXISTS users (
-  id bigint(20) unsigned NOT NULL auto_increment,
-  authuser varchar(50) NOT NULL default '',
-  `date` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (id),
-  UNIQUE KEY date_authuser (`date`,authuser),
-  KEY authuser (authuser)
-);
-";
-$queries2[]="
-CREATE TABLE IF NOT EXISTS sites (
-  id bigint(20) unsigned NOT NULL auto_increment,
-  `date` date NOT NULL default '0000-00-00',
-  site varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY date_site (`date`,site)
-);
-";
-      
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('lastTimestamp', '0');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('lastCleanUp', '0000-00-00');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultindexOrderBy', 'date');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultindexOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('lastImportedRecordsNumber', '0');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultDateTimeOrderBy', 'time');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultindexByteUnit', 'M');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSummaryOrderBy', 'cachePercent');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSummaryOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSummaryByteUnit', 'M');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSitesSummaryOrderBy', 'bytes');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSitesSummaryOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultIPSitesSummaryByteUnit', 'M');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultDateTimeOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultAllSitesOrderBy', 'cachePercent');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultAllSitesOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultAllSitesByteUnit', 'M');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultDateTimeByteUnit', 'K');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultSiteUsersOrderBy', 'bytes');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultSiteUsersOrderMethod', 'DESC');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('defaultSiteUsersByteUnit', 'M');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('keepHistoryDays', '32');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('squidLogPath', '/var/log/squid/access.log');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('schemaVersion', '3');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('resolveClients', 'enabled');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('mysarImporter', 'enabled');";
-$queries3[]="INSERT IGNORE INTO `config` VALUES ('topGrouping', 'Daily');";
-$queries5[]='GRANT ALL ON '.$_REQUEST['dbname'].'.* TO '.$_REQUEST['dbuser']."@'".$_REQUEST['dbhost']."' IDENTIFIED BY '".$_REQUEST['dbpass']."';";
-$queries6[]="ALTER TABLE `config` DROP INDEX `name`,ADD UNIQUE `name`( `name` );";
 
 $DEBUG_MODE='web';
 $DEBUG_LEVEL='20';
@@ -812,12 +731,14 @@ switch($_REQUEST['install']) {
 		break;
 	default:
 		?>		
+                <center><img src="../images/glasses.jpg"><br>
+		Welcome to squidLook installer!
+		</center>
+
 		Hello,
-		<br>I am mysar's installation wizard and I will help you install this program.
+		<br>I am the installation wizard and I will help you install this program.
 		<p><a href="./?install=1">Click here to continue &gt;&gt;&gt;</a>
 		<p>
-		<b>IMPORTANT</b>: If you missed the instructions on how to remove this wizard during the
-		installation, <a href="index.php?install=end">click here</a> for instructions.
 		<?
 }
 echo $html_end;
