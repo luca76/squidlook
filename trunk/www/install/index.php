@@ -26,7 +26,7 @@ set_time_limit(0);
 $basePath=realpath(dirname(__FILE__));
 
 function generate_db() {
-
+	print "chiamata a generate_db";
 	global $basePath;
 
 	$lines = file($basePath.'/squidlook.sql');
@@ -35,7 +35,9 @@ function generate_db() {
 		if (substr ($line, 0, 2) == '--') {
 			continue;
 		}
-		mysql_query ($line) || die "Mysql error at line $linenum, file $basePath/squidlook.sql";
+		if (!preg_match ("/$\s+^/", $line)) {
+			mysql_query ($line) or die ("Mysql error at line $linenum, file $basePath/squidlook.sql " . mysql_error());
+		}
 	}
 	return 0;
 }
@@ -79,7 +81,7 @@ $DEBUG_LEVEL='20';
 $basePath=realpath(dirname(__FILE__).'/../../');
 
 
-$html_start='<html><head><link rel="stylesheet" href="dfl.css" type="text/css"><body><center>MySQL Squid Access Report Installation wizard</center><p>';
+$html_start='<html><head><link rel="stylesheet" href="dfl.css" type="text/css"><body><center>SquidLook Installation wizard</center><p>';
 $html_end="</body></html>";
 
 echo $html_start;
@@ -722,17 +724,12 @@ switch($_REQUEST['install']) {
 		<p>
 		<a href="./?install=new1">New install</a>
 		<p>
-		<a href="./?install=upgrade1">Upgrade from mysar 1.x</a>
-		<p>
-		<a href="./?install=upgrade3">Upgrade from mysar 2.0.7</a>
-		<p>
-		<a href="./?install=upgrade3">Upgrade from mysar 2.0.11</a>
+		<a href="./?install=upgrade3">Upgrade from mysar 2.0.11 or 2.0.12</a>
 		<?
 		break;
 	default:
 		?>		
-                <center><img src="../images/glasses.jpg"><br>
-		Welcome to squidLook installer!
+                <center><img src="images/glasses.jpg"><br>
 		</center>
 
 		Hello,
