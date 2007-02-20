@@ -49,7 +49,7 @@ $cleanUntil=date('Y-m-d',mktime(0,0,0,substr($today,5,2),substr($today,8,2)-getC
 debug('Cleaning up until '.$cleanUntil,40,__FILE__,__LINE__);
 	
 // array containing tables to be cleaned
-$cleanTable=array('sites','traffic','trafficSummaries','users');
+$cleanTable=array('traffic','trafficSummaries');
 reset($cleanTable);
 
 while(list($key,$tableName)=each($cleanTable)) {
