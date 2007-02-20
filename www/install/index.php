@@ -26,18 +26,29 @@ set_time_limit(0);
 $basePath=realpath(dirname(__FILE__));
 
 function generate_db() {
-	print "chiamata a generate_db";
 	global $basePath;
 
-	$lines = file($basePath.'/squidlook.sql');
+	$lines = file($basePath.'/www/install/squidlook.sql');
+	
+	$query = '';
 
 	foreach ($lines as $linenum => $line) {
 		if (substr ($line, 0, 2) == '--') {
 			continue;
 		}
-		if (!preg_match ("/$\s+^/", $line)) {
-			mysql_query ($line) or die ("Mysql error at line $linenum, file $basePath/squidlook.sql " . mysql_error());
+		if (trim ($line) != '') {
+			$query = $query.$line;
+			if (strrpos($line, ";") !== false) {
+				$result = mysql_query ($query) or die ("Mysql error at line $linenum, file $basePath/squidlook.sql " . mysql_error());
+				db_check ($result);
+				$query = '';
+			}
 		}
+	}
+	if ($query != '') {
+		echo ("Executing '$query'<br>");
+		$result = mysql_query ($query) or die ("Mysql error at line $linenum, file $basePath/squidlook.sql " . mysql_error());
+		db_check ($result);
 	}
 	return 0;
 }
@@ -81,7 +92,7 @@ $DEBUG_LEVEL='20';
 $basePath=realpath(dirname(__FILE__).'/../../');
 
 
-$html_start='<html><head><link rel="stylesheet" href="dfl.css" type="text/css"><body><center>SquidLook Installation wizard</center><p>';
+$html_start='<html><head><link rel="stylesheet" href="dfl.css" type="text/css"><body><center><strong>SquidLook Installation wizard</strong></center><p>';
 $html_end="</body></html>";
 
 echo $html_start;
@@ -603,13 +614,9 @@ switch($_REQUEST['install']) {
 
 	case 'end':
 		echo "Installation is finished!";
-		echo "<p><b><h3>Now you need to erase the directory \"$basePath/www/install\" before proceeding. If you don't, this wizard will start over again!</h3></b>";
-		echo "<br>This can be done by executing the following command, as root: rm -rf $basePath/www/install";
-		echo "<p>Please visit mysar's main page <a href=\"http://giannis.stoilis.gr/software/mysar/\">http://giannis.stoilis.gr/software/mysar/</a> if you have any problem whatsoever with mysar. You can even drop me a note, telling me what you think about this software. Any opinion is taken under consideration, either positive or negative.
-<p>Good luck with mysar, I hope it serves you well.
-<p>--
-<br><a href=\"http://giannis.stoilis.gr/\">Giannis Stoilis</a>
-<p><center><a href=\"index.php\">Start using mysar!</a>";
+		echo "<p>Please refer to <a href=\"http://code.google.com/p/squidlook/\">SquidLook site</a> if you have any problem.<p> You can even drop me a note, telling me what you think about this software. Any opinion is taken under consideration, either positive or negative.
+<p>Good luck with SquidLook, I hope it serves you well.
+<p><center><a href=\"index.php\">Start using SquidLook!</a>";
 
 		break;
 	case 'new4':
@@ -634,21 +641,16 @@ switch($_REQUEST['install']) {
 		echo '<p><a href="./?install=end">Click here</a> to continue';
 		break;
 	case 'new3':
-		echo "Reading config.ini file...";
-		$iniConfig=parse_ini_file($basePath.'/etc/config.ini');
-		if($iniConfig==FALSE) {
-			echo "Failed!";
-			echo '<p>You need to create the file "'.$basePath.'/etc/config.ini", making sure it is readable by the web server process, with the following contents:';
-			echo '<br>dbUser = '.$_REQUEST['dbuser'];
-			echo '<br>dbPass = '.$_REQUEST['dbpass'];
-			echo '<br>dbHost = '.$_REQUEST['dbhost'];
-			echo '<br>dbName = '.$_REQUEST['dbname'];
-			echo '<p><a href="index.php?install=new3">Click here</a> to try again.';
-			die();
-		}
-		echo "Found!";
-		echo "<br>".print_r($iniConfig,TRUE);
-		echo "<p>Testing database connection...";
+		echo "Creating config.ini file...";
+		$handle = fopen ($basePath.'/etc/config.ini', "w") or die ("Unable do edit $basePath/etc/config.ini");
+		fwrite ($handle, 'dbUser = '.$_REQUEST['dbuser']."\n");
+		fwrite ($handle, 'dbPass = '.$_REQUEST['dbpass']."\n");
+		fwrite ($handle, 'dbHost = '.$_REQUEST['dbhost']."\n");
+		fwrite ($handle, 'dbName = '.$_REQUEST['dbname']."\n");
+		fwrite ($handle, 'installed = 1');
+		fclose ($handle);
+		echo "...done!";
+		echo "<p>Testing config file and the database connection...";
 		$iniConfig=parse_ini_file($basePath.'/etc/config.ini');
 		$link=mysql_connect($iniConfig['dbHost'],$iniConfig['dbUser'],$iniConfig['dbPass']);
 		db_check($link,3);
@@ -659,41 +661,29 @@ switch($_REQUEST['install']) {
 		db_check($result,3);
 		echo "Done!";
 		echo '<p><a href="index.php?install=new4">Click here</a> to continue.';
-
 		break;
 
 	case 'new2':
-		echo "Creating database...";
+		echo "Creating database...<p>";
 		$result=mysql_connect($_REQUEST['dbhost'],$_REQUEST['admuser'],$_REQUEST['admpass']);
 		db_check($result);
 
-		reset($queries1);
-		while(list($key,$value)=each($queries1)) {
-			$result=mysql_query($value);
-			db_check($result);
-		}
-
-		$result=mysql_select_db($_REQUEST['dbname']);
+		$result=mysql_query ('DROP DATABASE IF EXISTS '.$_REQUEST['dbname']);
 		db_check($result);
-		
-		reset($queries2);
-		while(list($key,$value)=each($queries2)) {
-			$result=mysql_query($value);
-			db_check($result);
-		}
 
-		reset($queries3);
-		while(list($key,$value)=each($queries3)) {
-			$result=mysql_query($value);
-			db_check($result);
-		}
+		$result=mysql_query ('CREATE DATABASE '.$_REQUEST['dbname']);
+		db_check($result);
 
-		reset($queries5);
-		while(list($key,$value)=each($queries5)) {
-			$result=mysql_query($value);
-			db_check($result);
-		}
+		$result=mysql_select_db ($_REQUEST['dbname']);
+		db_check($result);
 
+		generate_db();		
+
+		echo "Creating user...<p>";
+		$query = 'GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON '.$_REQUEST['dbname'].'.*';
+		$query .= ' TO \''.$_REQUEST['dbuser'].'\'@\'localhost\'';
+		$query .= ' IDENTIFIED BY \''.$_REQUEST['dbpass'].'\'';
+		$result=mysql_query ($query);
 		echo "Done!";
 
 		echo "<p><a href=\"index.php?install=new3";
@@ -706,25 +696,33 @@ switch($_REQUEST['install']) {
 	case 'new1':
 		?>
 		I need the administrative username and password for mysql. It will not be stored. It will be used to create the database, import the schema, and create a simple user for this database.
- 		<p>Please, keep in ming that if there is already a database using the same name, it will be deleted.
+ 		<p>Please, keep in ming that if there is already a database using the same name, it will be deleted.<br><br>
+		<table align="center"><tr><td>
 		<form method="get">
-		MySQL Administrative Username:<input type="text" name="admuser" value="root">
-		<br>MySQL Administrative Password:<input type="text" name="admpass">
-		<br>MySQL Database Host:<input type="text" name="dbhost" value="localhost">
-		<br>MySQL Database Name for mysar:<input type="text" name="dbname" value="mysar">
-		<br>Mysql Database Username to create, for mysar:<input type="text" name="dbuser" value="mysar">
-		<br>Mysql Database Password for the new user defined above:<input type="text" name="dbpass" value="mysar">
+		MySQL Administrative Username <input type="text" name="admuser" value="root">
+		<p>MySQL Administrative Password <input type="text" name="admpass">
+		<p>MySQL Database Host <input type="text" name="dbhost" value="localhost">
+		<p>MySQL Database Name for squidLook <input type="text" name="dbname" value="squidlook">
+		<p>Mysql Database Username to create, for squidLook <input type="text" name="dbuser" value="squidlook">
+		<p>Mysql Database Password for the new user defined above <input type="text" name="dbpass" value="squidlook">
+		<p>SquidLook host from which Mysql database is connected <input type="text" name="dbconnect" value="localhost">
 		<input type="hidden" name="install" value="new2">
-		<br><input type="submit">
+		<p><center><input type="submit" value="OK"></center>
+		</td></tr></table>
 		<?
 		break;
 	case '1':
 		?>
 		Are you installing for the first time, or are you upgrading from a previous mysar version?
-		<p>
-		<a href="./?install=new1">New install</a>
-		<p>
+		<p><p>
+		<ul>
+		<li>
+		<a href="./?install=new1">New install</a><p>
+		</li>
+		<li>
 		<a href="./?install=upgrade3">Upgrade from mysar 2.0.11 or 2.0.12</a>
+		</li>
+		</ul>
 		<?
 		break;
 	default:
