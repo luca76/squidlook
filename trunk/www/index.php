@@ -20,13 +20,17 @@
 $DEBUG_MODE='web';
 $DEBUG_LEVEL='20';
 
-if(file_exists('install') && !file_exists('install/install.done')) {
+// calculate the base path of the program
+$basePath=realpath(dirname(__FILE__).'/../');
+
+$iniFile = parse_ini_file ($basePath."/etc/config.ini");
+
+#if(file_exists('install') && !file_exists('install/install.done')) {
+if ($iniFile['installed'] != 1) {
 	require('install/index.php');
 	die();
 }
 
-// calculate the base path of the program
-$basePath=realpath(dirname(__FILE__).'/../');
 
 // Common tasks for both web and cmd
 require($basePath.'/inc/common.inc.php');
