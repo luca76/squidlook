@@ -681,7 +681,7 @@ switch($_REQUEST['install']) {
 
 		echo "Creating user...<p>";
 		$query = 'GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON '.$_REQUEST['dbname'].'.*';
-		$query .= ' TO \''.$_REQUEST['dbuser'].'\'@\'localhost\'';
+		$query .= ' TO \''.$_REQUEST['dbuser'].'\'@\''.$_REQUEST['dbconnect'].'\'';
 		$query .= ' IDENTIFIED BY \''.$_REQUEST['dbpass'].'\'';
 		$result=mysql_query ($query);
 		echo "Done!";
@@ -705,7 +705,7 @@ switch($_REQUEST['install']) {
 		<p>MySQL Database Name for squidLook <input type="text" name="dbname" value="squidlook">
 		<p>Mysql Database Username to create, for squidLook <input type="text" name="dbuser" value="squidlook">
 		<p>Mysql Database Password for the new user defined above <input type="text" name="dbpass" value="squidlook">
-		<p>SquidLook host from which Mysql database is connected <input type="text" name="dbconnect" value="localhost">
+		<p>SquidLook host <input type="text" name="dbconnect" value="localhost">
 		<input type="hidden" name="install" value="new2">
 		<p><center><input type="submit" value="OK"></center>
 		</td></tr></table>
