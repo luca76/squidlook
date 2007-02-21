@@ -27,7 +27,8 @@ $iniFile = parse_ini_file ($basePath."/etc/config.ini");
 
 #if(file_exists('install') && !file_exists('install/install.done')) {
 if ($iniFile['installed'] != 1) {
-	require('install/index.php');
+	// require('install/index.php');
+	header("location: install/");
 	die();
 }
 
@@ -44,6 +45,9 @@ $smarty->assign('pageVars',$pageVars);
 
 // get last accessed record
 $pageVars['lastTimestamp']=getConfigValue('lastTimestamp');
+if ($pageVars['lastTimestamp'] == 0) {
+	$pageVars['lastTimestamp'] = mktime();
+}
 $pageVars['lastTimestampFormatted']=date('d-m-Y H:i:s',$pageVars['lastTimestamp']);
 
 // get last clean-up

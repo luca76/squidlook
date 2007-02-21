@@ -1,4 +1,5 @@
-dbUser = mysar
-dbPass = mysar
+dbUser = squidlook
+dbPass = squidlook
 dbHost = localhost
-dbName = mysar
+dbName = squidlook
+installed = 1

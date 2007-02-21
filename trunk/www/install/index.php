@@ -92,7 +92,7 @@ $DEBUG_LEVEL='20';
 $basePath=realpath(dirname(__FILE__).'/../../');
 
 
-$html_start='<html><head><link rel="stylesheet" href="dfl.css" type="text/css"><body><center><strong>SquidLook Installation wizard</strong></center><p>';
+$html_start='<html><head><link rel="stylesheet" href="../dfl.css" type="text/css"><body><center><strong>SquidLook Installation wizard</strong></center><p>';
 $html_end="</body></html>";
 
 echo $html_start;
@@ -616,7 +616,7 @@ switch($_REQUEST['install']) {
 		echo "Installation is finished!";
 		echo "<p>Please refer to <a href=\"http://code.google.com/p/squidlook/\">SquidLook site</a> if you have any problem.<p> You can even drop me a note, telling me what you think about this software. Any opinion is taken under consideration, either positive or negative.
 <p>Good luck with SquidLook, I hope it serves you well.
-<p><center><a href=\"index.php\">Start using SquidLook!</a>";
+<p><center><a href=\"../index.php\">Start using SquidLook!</a>";
 
 		break;
 	case 'new4':
@@ -642,7 +642,7 @@ switch($_REQUEST['install']) {
 		break;
 	case 'new3':
 		echo "Creating config.ini file...";
-		$handle = fopen ($basePath.'/etc/config.ini', "w") or die ("Unable do edit $basePath/etc/config.ini");
+		$handle = fopen ($basePath.'/etc/config.ini', "w") or die ("<br><br>Unable do edit $basePath/etc/config.ini. Please make the folder $basePath/etc writable.<br>You can do this by typing this command:<p>&nbsp;&nbsp;  chmod a+w $basePath/etc/config.ini");
 		fwrite ($handle, 'dbUser = '.$_REQUEST['dbuser']."\n");
 		fwrite ($handle, 'dbPass = '.$_REQUEST['dbpass']."\n");
 		fwrite ($handle, 'dbHost = '.$_REQUEST['dbhost']."\n");
@@ -727,7 +727,7 @@ switch($_REQUEST['install']) {
 		break;
 	default:
 		?>		
-                <center><img src="images/glasses.jpg"><br>
+                <center><img src="../images/glasses.jpg"><br>
 		</center>
 
 		Hello,

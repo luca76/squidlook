@@ -168,7 +168,6 @@ function db_select_one_row($query) {
 
 	debug('('.$query.')',40,__FILE__,__LINE__);
 	$result=mysql_query($query);
-	$row=mysql_fetch_array($result);
 
 	return $row;
 }
