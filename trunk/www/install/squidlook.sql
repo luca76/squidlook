@@ -61,7 +61,7 @@ INSERT INTO `config` (`name`, `value`) VALUES
 ('squidLogPath', '/var/log/squid/access.log'),
 ('schemaVersion', '3'),
 ('resolveClients', 'enabled'),
-('mysarImporter', 'enabled'),
+('squidlookImporter', 'enabled'),
 ('topGrouping', 'monthly'),
 ('lastLogOffset', ''),
 ('firstLogTimestamp', ''),
