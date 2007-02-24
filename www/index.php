@@ -23,6 +23,11 @@ $DEBUG_LEVEL='20';
 // calculate the base path of the program
 $basePath=realpath(dirname(__FILE__).'/../');
 
+if (!file_exists($basePath."/etc/config.ini")) {
+        header("location: install/");
+        die();
+}
+
 $iniFile = parse_ini_file ($basePath."/etc/config.ini");
 
 #if(file_exists('install') && !file_exists('install/install.done')) {
@@ -600,7 +605,7 @@ switch($_REQUEST['a']) {
 		$configVariables[]='keepHistoryDays';
 		$configVariables[]='resolveClients';
 		$configVariables[]='squidLogPath';
-		$configVariables[]='mysarImporter';
+		$configVariables[]='squidlookImporter';
 		$configVariables[]='topGrouping';
 		
 		reset($configVariables);
