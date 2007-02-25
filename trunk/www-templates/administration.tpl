@@ -80,11 +80,11 @@
         <form method="POST">
         <input type="hidden" name="hiddenSubmit" value="1">
         <input type="hidden" name="configName" value="topGrouping">
-	{if $pageVars.topGrouping=="Yearly"}
+	{if $pageVars.topGrouping=="yearly"}
 		{assign var="optionYearly" value="selected"}
-	{elseif $pageVars.topGrouping=="Monthly"}
+	{elseif $pageVars.topGrouping=="monthly"}
 		{assign var="optionMonthly" value="selected"}
-	{elseif $pageVars.topGrouping=="Weekly"}
+	{elseif $pageVars.topGrouping=="weekly"}
 		{assign var="optionWeekly" value="selected"}
 	{else}
 		{assign var="optionDaily" value="selected"}
@@ -92,10 +92,10 @@
         <tr>
           <td colspan="2">Top grouping is
             <select name="thisValue">
-              <option value="Yearly" {$optionYearly}>Annuale
-              <option value="Monthly" {$optionMonthly}>Mensile
-              <option value="Weekly" {$optionWeekly}>Settimanale
-              <option value="Daily" {$optionDaily}>Giornaliero
+              <option value="yearly" {$optionYearly}>Yearly
+              <option value="monthly" {$optionMonthly}>Monthly
+              <option value="weekly" {$optionWeekly}>Weekly
+              <option value="daily" {$optionDaily}>Daily
             </select>
           </td>
           <td><input type="submit" name="submit" value="Change value"></td>
