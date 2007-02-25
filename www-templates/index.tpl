@@ -1,16 +1,16 @@
 
-      <table><tr><th style="font-size: 20px";>Riassunto {$pageVars.topGrouping}</th></tr></table>
+      <table><tr><th style="font-size: 20px";>Summary: {$pageVars.topGrouping}</th></tr></table>
       <p>
       <table cellpadding=1 cellspacing=1>
         <tr>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.dateASC}"><img border="{$pageVars.dateASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.dateLabelStart}Data{$pageVars.dateLabelEnd}
+              {$pageVars.dateLabelStart}Date{$pageVars.dateLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.dateDESC}"><img border="{$pageVars.dateDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.usersASC}"><img border="{$pageVars.usersASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.usersLabelStart}Utenti{$pageVars.usersLabelEnd}
+              {$pageVars.usersLabelStart}Users{$pageVars.usersLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.usersDESC}"><img border="{$pageVars.usersDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
           <th rowspan="2">
@@ -20,10 +20,10 @@
           </th>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.sitesASC}"><img border="{$pageVars.sitesASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.sitesLabelStart}Siti{$pageVars.sitesLabelEnd}
+              {$pageVars.sitesLabelStart}Sites{$pageVars.sitesLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.sitesDESC}"><img border="{$pageVars.sitesDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
-          <th colspan="2">Traffico</th>
+          <th colspan="2">Traffic</th>
         </tr>
         <tr>
           <th>
