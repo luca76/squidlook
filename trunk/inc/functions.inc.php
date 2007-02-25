@@ -287,6 +287,7 @@ function addParameter($url,$newParameter,$newValue) {
 	}
 	$parameters=explode('&',$url);
 	reset($parameters);
+	$foundParameter=FALSE;
 	while(list($key,$value)=each($parameters)) {
 		if(!empty($newQueryString)) {
 			$newQueryString=$newQueryString.'&';
@@ -379,6 +380,8 @@ function url_addParameter($url,$newParameter,$newValue) {
 	}
 	$parameters=explode('&',$url);
 	reset($parameters);
+	$newQueryString='';
+	$foundParameter=FALSE;
 	while(list($key,$value)=each($parameters)) {
 		if(!empty($newQueryString)) {
 			$newQueryString=$newQueryString.'&';

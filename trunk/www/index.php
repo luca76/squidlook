@@ -37,10 +37,10 @@ if ($iniFile['installed'] != 1) {
 	die();
 }
 
+error_reporting(E_ALL);
 
 // Common tasks for both web and cmd
 require($basePath.'/inc/common.inc.php');
-
 
 $pageVars['programName']=PROGRAM_NAME_LONG;
 $pageVars['programVersion']=PROGRAM_VERSION;
@@ -56,7 +56,11 @@ if ($pageVars['lastTimestamp'] == 0) {
 $pageVars['lastTimestampFormatted']=date('d-m-Y H:i:s',$pageVars['lastTimestamp']);
 
 // get last clean-up
-$pageVars['lastCleanUp']=date_Ymd2dmY_seperator(getConfigValue('lastCleanUp'),'-');
+if (getConfigValue('lastCleanUp')=='') {
+	$pageVars['lastCleanUp'] = "Never";
+} else {
+	$pageVars['lastCleanUp']=date_Ymd2dmY_seperator(getConfigValue('lastCleanUp'),'-');
+}
 
 // get last imported records number
 $pageVars['lastImportedRecordsNumber']=getConfigValue('lastImportedRecordsNumber');
@@ -86,26 +90,32 @@ $pageVars['previousDate']=date('Y-m-d',mktime(0,0,0,$pageVars['month'],$pageVars
 $pageVars['nextDate']=date('Y-m-d',mktime(0,0,0,$pageVars['month'],$pageVars['day']+1,$pageVars['year']));
 $pageVars['previousWeek']=date('Y-m-d',mktime(0,0,0,$pageVars['month'],$pageVars['day']-7,$pageVars['year']));
 $pageVars['nextWeek']=date('Y-m-d',mktime(0,0,0,$pageVars['month'],$pageVars['day']+7,$pageVars['year']));
-if($_REQUEST['hostiplong']) {
+if(!empty($_REQUEST['hostiplong'])) {
 	$pageVars['host']=getHostFromIP($_REQUEST['hostiplong'],$pageVars['date']);
 	$pageVars['hostiplong']=$_REQUEST['hostiplong'];
 }
 
-if($_REQUEST['sitesID']) {
+if(!empty($_REQUEST['sitesID'])) {
 	$pageVars['sitesID']=$_REQUEST['sitesID'];
 	$pageVars['site']=getSiteFromSiteID($pageVars['sitesID'],$pageVars['date']);
 }
 
 $pageVars['activeUsers']=getActiveUsers();
 
-$pageVars['user']=getUserFromUsersID($_REQUEST['usersID'],$pageVars['date']);
-$pageVars['usersID']=$_REQUEST['usersID'];
-
-if($_REQUEST['action']=='setDefaultView') {
-	setDefaultView();
+if (!empty($_REQUEST['usersID'])) {
+	$pageVars['user']=getUserFromUsersID($_REQUEST['usersID'],$pageVars['date']);
+	$pageVars['usersID']=$_REQUEST['usersID'];
 }
 
-switch($_REQUEST['a']) {
+if (!empty($_REQUEST['action'])) {
+	if($_REQUEST['action']=='setDefaultView') {
+		setDefaultView();
+	}
+}
+
+$request = empty($_REQUEST['a']) ? '' : $_REQUEST['a'];
+
+switch($request) {
 	case 'IPSummary':
 		// create the urls for the users,date, bytes and cachePercent
 		$validSortedFields[]='bytes';
@@ -588,18 +598,20 @@ switch($_REQUEST['a']) {
 	case 'administration':
 		$template='administration';
 		
-		if($_REQUEST['hiddenSubmit']=='1') {
+		if (!empty ($_REQUEST['hiddenSubmit'])) {
+			if($_REQUEST['hiddenSubmit']=='1') {
 
-			updateConfig($_REQUEST['configName'],$_REQUEST['thisValue']);
+				updateConfig($_REQUEST['configName'],$_REQUEST['thisValue']);
 
-		} elseif($_REQUEST['action']=='eraseAllStats') {
-			$tables=array('hostnames','sites','traffic','trafficSummaries','users');
-			reset($tables);
-			while(list($key,$value)=each($tables)) {
-				$query='TRUNCATE TABLE '.$value;
-				db_query($query);
+			} elseif($_REQUEST['action']=='eraseAllStats') {
+				$tables=array('hostnames','sites','traffic','trafficSummaries','users');
+				reset($tables);
+				while(list($key,$value)=each($tables)) {
+					$query='TRUNCATE TABLE '.$value;
+					db_query($query);
+				}
+				updateConfig('lastTimestamp','0');
 			}
-			updateConfig('lastTimestamp','0');
 		}
 
 		$configVariables[]='keepHistoryDays';
@@ -664,10 +676,10 @@ switch($_REQUEST['a']) {
 
 		// date grouping calculation
 		//// Available groupings
-		$dateGroupings['Daily']='0';
-		$dateGroupings['Weekly']='1';
-		$dateGroupings['Monthly']='2';
-		$dateGroupings['Yearly']='3';
+		$dateGroupings['daily']='0';
+		$dateGroupings['weekly']='1';
+		$dateGroupings['monthly']='2';
+		$dateGroupings['yearly']='3';
 		////get user-selected grouping
 		$topGrouping=getConfigValue('topGrouping');
 		////get valid groupings that can be generated from the available data
@@ -675,6 +687,7 @@ switch($_REQUEST['a']) {
 		$query.='DATEDIFF(MAX(date),MIN(date))';
 		$query.=' FROM ';
 		$query.='trafficSummaries';
+		$whereQuery = '';
 		if(!empty($_REQUEST['minDate']) && $_REQUEST['minDate']!='') {
 			$whereQuery=' WHERE ';
 			$whereQuery.=" date>='".$_REQUEST['minDate']."'";
@@ -685,13 +698,13 @@ switch($_REQUEST['a']) {
 		$dbDays=db_select_one_row($query);
 		$dbDays=$dbDays['0'];
 		if($dbDays>365) {
-			$validGrouping='Yearly';
+			$validGrouping='yearly';
 		} elseif($dbDays>31) {
-			$validGrouping='Monthly';
+			$validGrouping='monthly';
 		} elseif($dbDays>7) {
-			$validGrouping='Weekly';
+			$validGrouping='weekly';
 		} else {
-			$validGrouping='Daily';
+			$validGrouping='daily';
 		}
 
 		//Choose the grouping closest to the user selected
@@ -700,20 +713,21 @@ switch($_REQUEST['a']) {
 		}
 
 		$pageVars['topGrouping']=$topGrouping;
-
+	
+		$groupingQuery1='';
 		switch($topGrouping) {
-			case 'Yearly':
+			case 'yearly':
 			$groupingQuery1="DATE_FORMAT(date, '%x') AS dateFormatted";
 			$groupingQuery2=" GROUP BY dateFormatted";
 			
 			break;
 
-			case 'Monthly':
+			case 'monthly':
 			$groupingQuery1="DATE_FORMAT(date, '%M %x') AS dateFormatted";
 			$groupingQuery2=" GROUP BY dateFormatted";
 			break;
 
-			case 'Weekly':
+			case 'weekly':
 			$groupingQuery1='CONCAT(';
 			$groupingQuery1.="DATE_FORMAT(MIN(date), '%W, %d %M %x')";
 			$groupingQuery1.=',';
