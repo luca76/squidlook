@@ -159,10 +159,7 @@ function debug($message,$debugLevel='',$file='',$line='') {
 function getConfigValue($name) {
 	
 	$query="SELECT value FROM config WHERE name='$name'";
-	print "Executing $query<br>";
 	$result=db_select_one_row($query);
-	print_r ($result);
-	print "<br>";
 
 	return $result['value'];
 }
