@@ -727,7 +727,7 @@ switch($_REQUEST['install']) {
 		break;
 	default:
 		?>		
-                <center><img src="../images/glasses.jpg"><br>
+                <center><img src="/squidLook/www/images/glasses.jpg"><br>
 		</center>
 
 		Hello,
