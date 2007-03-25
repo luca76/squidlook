@@ -713,15 +713,15 @@ switch($_REQUEST['install']) {
 		break;
 	case '1':
 		?>
-		Are you installing for the first time, or are you upgrading from a previous mysar version?
+		<!-- Are you installing for the first time, or are you upgrading from a previous mysar version? -->
 		<p><p>
 		<ul>
 		<li>
 		<a href="./?install=new1">New install</a><p>
 		</li>
-		<li>
+		<!-- li>
 		<a href="./?install=upgrade3">Upgrade from mysar 2.0.11 or 2.0.12</a>
-		</li>
+		</li -->
 		</ul>
 		<?
 		break;
@@ -732,7 +732,7 @@ switch($_REQUEST['install']) {
 
 		Hello,
 		<br>I am the installation wizard and I will help you install this program.
-		<p><a href="./?install=1">Click here to continue &gt;&gt;&gt;</a>
+		<p><a href="./?install=new1">Click here to continue &gt;&gt;&gt;</a>
 		<p>
 		<?
 }

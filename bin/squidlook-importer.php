@@ -430,11 +430,12 @@ if ($toInsert > 0) {
 	db_insert(substr ( $InsQuery, 0, -2) );
 }
 
-# close the connection
-mysql_close ($link);
 
 debug('End timestamp is '.strftime ('%c',mktime()),30,__FILE__,__LINE__);
 debug($argv[0].' stopped.',30,__FILE__,__LINE__);
 print "\n";
 my_exit(0);
+
+# close the connection
+mysql_close ($link);
 ?>
