@@ -3,6 +3,22 @@
       <table>
         <form method="POST">
         <input type="hidden" name="hiddenSubmit" value="1">
+        <input type="hidden" name="configName" value="language">
+		<tr>
+		  <td>Language</td>
+		  <td><select name="thisValue">
+			{foreach from=$pageVars.languages key=k item=foo}
+				<option value={$k} {if $pageVars.language eq $k}selected{/if} >{$foo}</option>
+			{/foreach}
+		  </select></td>
+		  <td><input type="submit" name="submit" value="Change value"></td>
+		</tr>
+		<tr>
+		  <td colspan="3"><hr size="1"></td>
+		</tr>
+		</form>
+        <form method="POST">
+        <input type="hidden" name="hiddenSubmit" value="1">
         <input type="hidden" name="configName" value="keepHistoryDays">
         <tr>
           <td colspan="2">Automatically delete data older than <input type="text" name="thisValue" size="2" value="{$pageVars.keepHistoryDays}"> days</td>

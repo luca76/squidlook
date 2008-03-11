@@ -66,7 +66,7 @@ debug('Done.',40,__FILE__,__LINE__);
 // Identification
 define('PROGRAM_NAME_SHORT','SquidLook');
 define('PROGRAM_NAME_LONG','SquidLook');
-define('PROGRAM_VERSION','0.99');
+define('PROGRAM_VERSION','1.00');
 
 if($DEBUG_MODE=='web') {
 // Initialize smarty template engine
