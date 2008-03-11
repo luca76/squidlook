@@ -1,6 +1,6 @@
 <?php
 # Program: SquidLook
-# Copyright 2007, Trapanator <trap@trapanator.com>
+# Copyright 2008, Trapanator <trap@trapanator.com>
 # Derived from the work of:
 # Program: mysar, File: www/install/index.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
@@ -24,6 +24,7 @@
 // This is needed later on...
 set_time_limit(0);
 $basePath=realpath(dirname(__FILE__));
+$images=substr($basePath, 0, strrpos ($basePath, "www"));
 
 function generate_db() {
 	global $basePath;
@@ -727,8 +728,7 @@ switch($_REQUEST['install']) {
 		break;
 	default:
 		?>		
-                <center><img src="/squidLook/www/images/glasses.jpg"><br>
-		</center>
+        <center><img src="../images/glasses.jpg"><br></center>
 
 		Hello,
 		<br>I am the installation wizard and I will help you install this program.
