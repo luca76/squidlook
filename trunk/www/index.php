@@ -24,7 +24,7 @@ $DEBUG_LEVEL='20';
 $basePath=realpath(dirname(__FILE__).'/../');
 
 if (!file_exists($basePath."/etc/config.ini")) {
-        header("location: install/");
+        header("location: install/?install=");
         die();
 }
 
@@ -619,15 +619,25 @@ switch($request) {
 		$configVariables[]='squidLogPath';
 		$configVariables[]='squidlookImporter';
 		$configVariables[]='topGrouping';
+		$configVariables[]='language';
 		
 		reset($configVariables);
 		while(list($key,$value)=each($configVariables)) {
 			$pageVars[$value]=getConfigValue($value);
 		}
 
+		$lang = array();
+		# Search the available languages
+		foreach (glob("../lang/*.lang") as $filename) {
+			$h = fopen ($filename, 'r');
+			$l = fgets ($h, 255);
+			fclose ($h);
+			$lang[substr ($filename, strrpos ($filename, "/") + 1, 255)] = trim (substr ($l, stripos ($l, ": ") + 2, 255));
+		}
+		$pageVars["languages"] = $lang;
+		print_r ($pageVars);
 		break;
-		
-	
+
 	default:
 		// create the urls for the users,date, bytes and cachePercent
 		$validSortedFields[]='date';

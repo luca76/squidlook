@@ -66,7 +66,8 @@ INSERT INTO `config` (`name`, `value`) VALUES
 ('lastLogOffset', ''),
 ('firstLogTimestamp', ''),
 ('whitelistLimit', '100'),
-('allsitesLimit', '100');
+('allsitesLimit', '100'),
+('language', 'en.lang');
 
 
 -- --------------------------------------------------------

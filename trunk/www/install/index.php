@@ -697,7 +697,7 @@ switch($_REQUEST['install']) {
 	case 'new1':
 		?>
 		I need the administrative username and password for mysql. It will not be stored. It will be used to create the database, import the schema, and create a simple user for this database.
- 		<p>Please, keep in ming that if there is already a database using the same name, it will be deleted.<br><br>
+ 		<p>Please, keep in mind that if there is already a database using the same name, it will be deleted.<br><br>
 		<table align="center"><tr><td>
 		<form method="get">
 		MySQL Administrative Username <input type="text" name="admuser" value="root">
