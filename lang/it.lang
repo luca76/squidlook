@@ -1,4 +1,6 @@
 # Language: Italiano
+main = Pagina iniziale
+admin = Amministrazione
 daily = Giornaliero
 weekly = Settimanale
 monthly = Mensile

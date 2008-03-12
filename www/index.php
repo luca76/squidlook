@@ -62,6 +62,11 @@ if (getConfigValue('lastCleanUp')=='') {
 	$pageVars['lastCleanUp']=date_Ymd2dmY_seperator(getConfigValue('lastCleanUp'),'-');
 }
 
+require ($basePath.'/inc/translation.inc.php');
+#$pageVars['lang'] = getConfigValue('language');
+loadtranslations (getConfigValue('language'));
+$smarty->register_function('translate', 'translate');
+
 // get last imported records number
 $pageVars['lastImportedRecordsNumber']=getConfigValue('lastImportedRecordsNumber');
 
@@ -635,7 +640,6 @@ switch($request) {
 			$lang[substr ($filename, strrpos ($filename, "/") + 1, 255)] = trim (substr ($l, stripos ($l, ": ") + 2, 255));
 		}
 		$pageVars["languages"] = $lang;
-		print_r ($pageVars);
 		break;
 
 	default:
