@@ -1,17 +1,17 @@
-      <table><tr><th style="font-size: 20px";>Administration</th></tr></table>
+      <table><tr><th style="font-size: 20px";>{translate key="admin"}</th></tr></table>
       <p>
       <table>
         <form method="POST">
         <input type="hidden" name="hiddenSubmit" value="1">
         <input type="hidden" name="configName" value="language">
 		<tr>
-		  <td>Language</td>
+		  <td>{translate key="language"}</td>
 		  <td><select name="thisValue">
 			{foreach from=$pageVars.languages key=k item=foo}
 				<option value={$k} {if $pageVars.language eq $k}selected{/if} >{$foo}</option>
 			{/foreach}
 		  </select></td>
-		  <td><input type="submit" name="submit" value="Change value"></td>
+		  <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
 		</tr>
 		<tr>
 		  <td colspan="3"><hr size="1"></td>
@@ -21,11 +21,11 @@
         <input type="hidden" name="hiddenSubmit" value="1">
         <input type="hidden" name="configName" value="keepHistoryDays">
         <tr>
-          <td colspan="2">Automatically delete data older than <input type="text" name="thisValue" size="2" value="{$pageVars.keepHistoryDays}"> days</td>
-          <td><input type="submit" name="submit" value="Change value"></td>
+          <td colspan="2">{translate key="autodelete"} <input type="text" name="thisValue" size="2" value="{$pageVars.keepHistoryDays}"> {translate key="days"}</td>
+          <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
         </tr>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      To prevent the database from getting too big, SquidLook will delete old data periodically. Use this value to specify how often you want this maintenance to take place. Don't set this too high, as it will increase the load of the server. Default value: 32.
+		   {translate key="autodeleteinfo"}
       </td></tr>
         </form>
       <tr><td colspan="3"><hr size="1"></td></tr>
@@ -33,12 +33,12 @@
         <input type="hidden" name="hiddenSubmit" value="1">
         <input type="hidden" name="configName" value="squidLogPath">
         <tr>
-          <td>Squid's access.log file path</td>
+          <td>{translate key="squidlogpath"}</td>
           <td><input type="text" name="thisValue" size="30" value="{$pageVars.squidLogPath}"></td>
-          <td><input type="submit" name="submit" value="Change value"></td>
+          <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
         </tr>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      This is where to find squid's log file. SquidLook needs this value to collect data from the log. Make sure this file is readable by the user running SquidLook's cron job. Default value: /var/log/squid/access.log.
+		{translate key="squidlogpathdesc"}
       </td></tr>
         </form>
       <tr><td colspan="3"><hr size="1"></td></tr>
@@ -53,17 +53,17 @@
 	{assign var="optionDisabled" value="selected"}
 	{/if}
         <tr>
-          <td colspan="2">Client DNS resolving is
+          <td colspan="2">{translate key="clientdns"}
             <select name="thisValue">
-              <option value="enabled" {$optionEnabled}>enabled
-              <option value="disabled" {$optionDisabled}>disabled
+              <option value="enabled" {$optionEnabled}>{translate key="enabled"}
+              <option value="disabled" {$optionDisabled}>{translate key="disabled"}
             </select>
           </td>
-          <td><input type="submit" name="submit" value="Change value"></td>
+          <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
         </tr>
         </form>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      If you have a network where all of your clients connecting to the squid server have DNS resolvable address, enable this and SquidLook will use this information when displaying statistics. Otherwize, keep this disabled, as it is a waste of resources. Default value: Disabled.
+		{translate key="clientdnsdesc"}
       </td></tr>
 
       <tr><td colspan="3"><hr size="1"></td></tr>
@@ -78,17 +78,17 @@
 	{assign var="optionDisabled" value="selected"}
 	{/if}
         <tr>
-          <td colspan="2">SquidLook is
+          <td colspan="2">{translate key="squidlookstate"}
             <select name="thisValue">
-              <option value="enabled" {$optionEnabled}>enabled
-              <option value="disabled" {$optionDisabled}>disabled
+              <option value="enabled" {$optionEnabled}>{translate key="enabled"}
+              <option value="disabled" {$optionDisabled}>{translate key="disabled"}
             </select>
           </td>
-          <td><input type="submit" name="submit" value="Change value"></td>
+          <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
         </tr>
         </form>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      If, for some reason, you want SquidLook to stop importing the log file into the database, use this option. Default value: Enabled.
+		{translate key="squidlookstatedesc"}
       </td></tr>
 
 
@@ -106,27 +106,27 @@
 		{assign var="optionDaily" value="selected"}
 	{/if}
         <tr>
-          <td colspan="2">Top grouping is
+          <td colspan="2">{translate key="topgrouping"}
             <select name="thisValue">
-              <option value="yearly" {$optionYearly}>Yearly
-              <option value="monthly" {$optionMonthly}>Monthly
-              <option value="weekly" {$optionWeekly}>Weekly
-              <option value="daily" {$optionDaily}>Daily
+              <option value="yearly" {$optionYearly}>{translate key="yearly"}
+              <option value="monthly" {$optionMonthly}>{translate key="monthly"}
+              <option value="weekly" {$optionWeekly}>{translate key="weekly"}
+              <option value="daily" {$optionDaily}>{translate key="daily"}
             </select>
           </td>
-          <td><input type="submit" name="submit" value="Change value"></td>
+          <td><input type="submit" name="submit" value="{translate key="changevalue"}"></td>
         </tr>
         </form>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      If, for some reason, you want SquidLook to stop importing the log file into the database, use this option. Default value: Enabled.
+		{translate key="topgroupingdesc"}
       </td></tr>
 
       <tr><td colspan="3"><hr size="1"></td></tr>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-      Press this button to erase ALL data collected by SquidLook. This action is not reversible. Use this solve any weird problems, like reports not updating correctly etc.
+		{translate key="erasedesc"}
       </td>
         <td colspan="3" style="text-align:center;">
-          <input type="submit" value="Erase all statistics" onClick="my_confirm('Are you sure you want to erase ALL statistics?','{$pageVars.uri}&action=eraseAllStats')">
+          <input type="submit" value="{translate key="erase"}" onClick="my_confirm('Are you sure you want to erase ALL statistics?','{$pageVars.uri}&action=eraseAllStats')">
         </td>
       </tr>
       

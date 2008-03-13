@@ -1,34 +1,34 @@
 
-      <table><tr><th style="font-size: 20px";>Summary: {$pageVars.topGrouping}</th></tr></table>
+      <table><tr><th style="font-size: 20px";>{translate key="indextitle"}: {translate key=$pageVars.topGrouping}</th></tr></table>
       <p>
       <table cellpadding=1 cellspacing=1>
         <tr>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.dateASC}"><img border="{$pageVars.dateASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.dateLabelStart}Date{$pageVars.dateLabelEnd}
+              {$pageVars.dateLabelStart}{translate key="date"}{$pageVars.dateLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.dateDESC}"><img border="{$pageVars.dateDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.usersASC}"><img border="{$pageVars.usersASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.usersLabelStart}Users{$pageVars.usersLabelEnd}
+              {$pageVars.usersLabelStart}{translate key="users"}{$pageVars.usersLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.usersDESC}"><img border="{$pageVars.usersDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.hostsASC}"><img border="{$pageVars.hostsASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.hostsLabelStart}Host{$pageVars.hostsLabelEnd}
+              {$pageVars.hostsLabelStart}{translate key="host"}{$pageVars.hostsLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.hostsDESC}"><img border="{$pageVars.hostsDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
           <th rowspan="2">
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.sitesASC}"><img border="{$pageVars.sitesASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.sitesLabelStart}Sites{$pageVars.sitesLabelEnd}
+              {$pageVars.sitesLabelStart}{translate key="sites"}{$pageVars.sitesLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.sitesDESC}"><img border="{$pageVars.sitesDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
-          <th colspan="2">Traffic</th>
+          <th colspan="2">{translate key="traffic"}</th>
         </tr>
         <tr>
           <th>
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.bytesASC}"><img border="{$pageVars.bytesASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.bytesLabelStart}BYTES{$pageVars.bytesLabelEnd}
+              {$pageVars.bytesLabelStart}{translate key="bytes"}{$pageVars.bytesLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.bytesDESC}"><img border="{$pageVars.bytesDESCImageBorder}" src="images/down-arrow.gif"></a>
             <br>
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.B}">{$pageVars.BLabelStart}B{$pageVars.BLabelEnd}</a>
@@ -41,7 +41,7 @@
           </th>
           <th>
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.cachePercentASC}"><img border="{$pageVars.cachePercentASCImageBorder}" src="images/up-arrow.gif"></a>
-              {$pageVars.cachePercentLabelStart}CACHE PERCENT{$pageVars.cachePercentLabelEnd}
+              {$pageVars.cachePercentLabelStart}{translate key="cache"}{$pageVars.cachePercentLabelEnd}
             <a href="{$smarty.server.PHP_SELF}?{$pageVars.url.cachePercentDESC}"><img border="{$pageVars.cachePercentDESCImageBorder}" src="images/down-arrow.gif"></a>
           </th>
         </tr>
