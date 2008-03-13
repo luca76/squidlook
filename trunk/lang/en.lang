@@ -1,7 +1,38 @@
 # Language: English
+# INDEX
 main = Main Page
 admin = Administration
 daily = Daily
 weekly = Weekly
 monthly = Monthly
 yearly = Yearly
+indextitle = Summary
+date = Date
+users = Users
+host = Host
+sites = Sites
+traffic = Traffic
+bytes = BYTES
+cache = CACHE PERCENT
+activeusers = Active users
+actualdate = Current date and time
+licensed = Licenced under the
+
+# ADMINISTRATION
+changevalue = Change Value
+language = Language
+autodelete = Automatically delete data older than
+days = days
+squidlogpath = Squid's access.log file path
+squidlogpathdesc = This is where to find squid's log file. SquidLook needs this value to collect data from the log. Make sure this file is readable by the user running SquidLook's cron job. Default value: /var/log/squid/access.log.
+autodeleteinfo = To prevent the database from getting too big, SquidLook will delete old data periodically. Use this value to specify how often you want this maintenance to take place. Don't set this too high, as it will increase the load of the server.
+clientdns = Client DNS resolving is
+clientdnsdesc = If you have a network where all of your clients connecting to the squid server have DNS resolvable address, enable this and SquidLook will use this information when displaying statistics. Otherwize, keep this disabled, as it is a waste of resources. Default value: Disabled.
+enabled = enabled
+disabled = disabled
+squidlookstate = SquidLook is
+squidlookstatedesc = If, for some reason, you want SquidLook to stop importing the log file into the database, use this option. Default value: Enabled.
+topgroup = Top grouping is
+topgroupdesc = If, for some reason, you want SquidLook to stop importing the log file into the database, use this option. Default value: Enabled.
+erasedesc = Press this button to erase ALL data collected by SquidLook. This action is not reversible. Use this solve any weird problems, like reports not updating correctly etc.
+erase = Erase all statistics

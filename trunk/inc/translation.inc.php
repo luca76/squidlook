@@ -7,7 +7,9 @@ function loadtranslations ($lang) {
 	global $langPath, $language;
 	$lines = file ($langPath.'/'.$lang);
 	foreach ($lines as $line) {
-		if (strpos ($line, "#") === 0) {
+		if (strpos ($line, "#") === 0 ||
+			trim($line) == ""
+				) {
 			continue;
 		}
 		$parts = explode ('=', $line);

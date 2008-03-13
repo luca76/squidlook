@@ -5,3 +5,35 @@ daily = Giornaliero
 weekly = Settimanale
 monthly = Mensile
 yearly = Annuale
+indextitle = Riassunto
+date = Data
+users = Utenti
+host = Host
+sites = Siti
+traffic = Traffico
+bytes = BYTE
+cache = USO CACHE
+activeusers = Utenti attivi
+actualdate = Data e ora attuale
+licensed = Rilasciato con licenza
+
+# ADMINISTRATION
+changevalue = Imposta valore
+language = Lingua
+autodelete = Elimina automaticamente i dati pi&ugrave; vecchi di 
+days = giorni
+autodeleteinfo = Per evitare che il database diventi troppo grande,  SquidLook eliminer&agrave; periodicamente i dati pi&ugrave; vecchi. Specificare il numero di giorni a parte dal quale i dati saranno eliminati.
+squidlogpath = Percorso del file access.log di Squid
+squidlogpathdesc = Indicare dove si trovi il log di squid. SquidLook ha bisogno di questo valore per raccogliere i dati. Assicurarsi che tale file sia leggibile dal processo di cron di SquidLook. Di solito il file &egrave; /var/log/squid/access.log.
+enabled = attivato
+disabled = disattivato
+clientdns = La risoluzione dell'host del client via DNS &egrave;
+clientdnsdesc = Se i client che si collegano al server Squid hanno indirizzi risolvibili dal DNS, abilitare quest'opzione e SquidLook risolver&agrave; il nome della macchina nelle statistiche. Altrimenti disabilitare quest'opzione. Valore predefenito: attivato.
+squidlookstate = SquidLook &egrave;
+squidlookstatedesc = Se volete disabilitare l'importazione dei file di log, utilizzare quest'opzione. Valore predefenito: attivato.
+topgroup = Tipo di riassunto nella pagina principale:
+topgroupdesc = Indicare il tipo di riassunto dei dati che volete nella pagina principale.
+erasedesc = Premere questo bottone per cancellare tutti i dati raccolti da SquidLook. Quest'azione &egrave; irreversibile.
+erase = Elimina tutte le statistiche
+
+
