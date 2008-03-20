@@ -106,7 +106,7 @@
 		{assign var="optionDaily" value="selected"}
 	{/if}
         <tr>
-          <td colspan="2">{translate key="topgrouping"}
+          <td colspan="2">{translate key="topgroup"}
             <select name="thisValue">
               <option value="yearly" {$optionYearly}>{translate key="yearly"}
               <option value="monthly" {$optionMonthly}>{translate key="monthly"}
@@ -118,7 +118,7 @@
         </tr>
         </form>
       <tr><td colspan="2" style="text-align:justify;" width="200">
-		{translate key="topgroupingdesc"}
+		{translate key="topgroupdesc"}
       </td></tr>
 
       <tr><td colspan="3"><hr size="1"></td></tr>
@@ -126,7 +126,7 @@
 		{translate key="erasedesc"}
       </td>
         <td colspan="3" style="text-align:center;">
-          <input type="submit" value="{translate key="erase"}" onClick="my_confirm('Are you sure you want to erase ALL statistics?','{$pageVars.uri}&action=eraseAllStats')">
+          <input type="submit" value="{translate key="erase"}" onClick="my_confirm('{translate key="areyousure"}','{$pageVars.uri}&action=eraseAllStats')">
         </td>
       </tr>
       
