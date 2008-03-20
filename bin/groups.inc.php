@@ -1,6 +1,6 @@
 <?php
 # Program: SquidLook
-# Copyright 2007, Trapanator <trap@trapanator.com>
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo
 #
 # This file is part of squidLook.
 #
