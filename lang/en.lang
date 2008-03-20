@@ -36,3 +36,4 @@ topgroup = Top grouping is
 topgroupdesc = If, for some reason, you want SquidLook to stop importing the log file into the database, use this option. Default value: Enabled.
 erasedesc = Press this button to erase ALL data collected by SquidLook. This action is not reversible. Use this solve any weird problems, like reports not updating correctly etc.
 erase = Erase all statistics
+areyousure = Are you sure you want to erase ALL statistics?

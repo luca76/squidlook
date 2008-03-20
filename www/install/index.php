@@ -1,6 +1,6 @@
 <?php
-# Program: SquidLook
-# Copyright 2008, Trapanator <trap@trapanator.com>
+# Program: SquidLook 
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo, Comune di Trento
 # Derived from the work of:
 # Program: mysar, File: www/install/index.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>

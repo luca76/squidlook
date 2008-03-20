@@ -35,5 +35,6 @@ topgroup = Tipo di riassunto nella pagina principale:
 topgroupdesc = Indicare il tipo di riassunto dei dati che volete nella pagina principale.
 erasedesc = Premere questo bottone per cancellare tutti i dati raccolti da SquidLook. Quest'azione &egrave; irreversibile.
 erase = Elimina tutte le statistiche
+areyousure = Siete sicuri di voler eliminare TUTTE le statistiche?
 
 
