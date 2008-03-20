@@ -21,9 +21,9 @@
 
 # please configure your arrays
 $groups = Array('Group1', 'Group2', 'Group3');
-$users[0] = Array('manganelll','fioronig','vicentinim');
-$users[1] = Array('veronesm', 'avit', 'lorenzag');
-$users[2] = Array('zanollim');
+$users[0] = Array('User1','User2','User3');
+$users[1] = Array('User4', 'User5', 'User6');
+$users[2] = Array('User7');
 
 function searchAD ($username) {
 
