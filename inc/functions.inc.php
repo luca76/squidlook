@@ -1,10 +1,12 @@
 <?php
-# Program: mysar, File: www/functions.inc.php
-# Copyright 2004-2995, Stoilis Giannis <giannis@stoilis.gr>
+# Program: squidLook, File: inc/common.inc.php
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo, Comune di Trento
+# Derived from: mysar,
+# copyright 2004-2005, Stoilis Giannis <giannis@stoilis.gr>
 #
-# This file is part of mysar.
+# This file is part of squidLook.
 #
-# mysar is free software; you can redistribute it and/or modify
+# squidLook is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
