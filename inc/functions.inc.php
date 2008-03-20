@@ -1,6 +1,6 @@
 <?php
 # Program: squidLook, File: inc/common.inc.php
-# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo, Comune di Trento
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo - Comune di Trento, Comune di Trento
 # Derived from: mysar,
 # copyright 2004-2005, Stoilis Giannis <giannis@stoilis.gr>
 #
