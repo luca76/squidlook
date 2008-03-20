@@ -1,7 +1,7 @@
 #!/usr/bin/php5
 <?php
 # Program: SquidLook
-# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo - Comune di Trento
 #
 # This file is part of squidLook.
 #
