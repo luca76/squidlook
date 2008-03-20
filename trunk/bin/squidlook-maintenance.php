@@ -1,7 +1,7 @@
 #!/usr/bin/php5
 <?php
 # Program: SquidLook
-# Copyright 2007, Trapanator <trap@trapanator.com>
+# Copyright 2007-2008, Luca Manganelli <luca76@gmail.com> - Servizio Sistema Informativo
 # Derived from the work of:
 # Program: mysar, File: bin/mysar-maintenance.php
 # Copyright 2004-2006, Stoilis Giannis <giannis@stoilis.gr>
